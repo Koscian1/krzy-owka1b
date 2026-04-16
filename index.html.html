@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Krzyżówka - Powiat Kościański</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; align-items: center; background: #e0e0e0; padding: 20px; }
+        
+        .crossword-container {
+            position: relative; width: 700px; height: 990px;
+            background-image: url('krzyzowka2.jpg.jpg'); 
+            background-size: 100% 100%; background-repeat: no-repeat; background-color: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-radius: 8px;
+        }
+
+        .cell {
+            position: absolute; width: 31px; height: 32px; text-align: center;
+            font-size: 18px; font-weight: bold; text-transform: uppercase;
+            border: 1px solid #999; background: rgba(255,255,255,0.7); outline: none;
+            transition: all 0.3s;
+        }
+
+        /* Styl żółty */
+        .cell.yellow, .cell.final { border: 2px solid #f1c40f; background: rgba(241, 196, 15, 0.1); }
+        
+        /* Kolory sprawdzenia */
+        .cell.correct { background: #2ecc71 !important; color: white; border-color: #27ae60; transform: scale(1.05); }
+        .cell.wrong { background: #e74c3c !important; color: white; border-color: #c0392b; }
+
+        .controls { margin-top: 25px; display: flex; gap: 15px; }
+        
+        button { 
+            padding: 12px 25px; font-size: 16px; font-weight: bold; cursor: pointer; 
+            background: #2c3e50; color: white; border: none; border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: 0.2s;
+        }
+        button:hover { background: #34495e; transform: translateY(-2px); }
+        button:active { transform: translateY(0); }
+
+        /* Okienko gratulacji */
+        #win-message {
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: white; padding: 30px; border-radius: 15px; text-align: center;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5); z-index: 1000; border: 3px solid #2ecc71;
+        }
+        #win-message h2 { color: #27ae60; margin-top: 0; }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 999; }
+
+        .info { background: #333; color: white; padding: 12px 20px; margin-bottom: 15px; border-radius: 30px; font-size: 13px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+
+    <div class="info">Uzupełnij wszystkie pola i kliknij <b>Sprawdź wynik</b>!</div>
+
+    <div class="crossword-container" id="grid">
+        <input type="text" id="h1" class="cell yellow" style="top: 115px; left: 321px;" data-ans="O" maxlength="1">
+        <input type="text" class="cell" style="top: 116px; left: 355px;" data-ans="B" maxlength="1">
+        <input type="text" class="cell" style="top: 116px; left: 391px;" data-ans="R" maxlength="1">
+        <input type="text" class="cell" style="top: 116px; left: 427px;" data-ans="A" maxlength="1">
+
+        <input type="text" id="h2" class="cell yellow" style="top: 154px; left: 321px;" data-ans="D" maxlength="1">
+        <input type="text" class="cell" style="top: 154px; left: 355px;" data-ans="I" maxlength="1">
+        <input type="text" class="cell" style="top: 154px; left: 392px;" data-ans="O" maxlength="1">
+        <input type="text" class="cell" style="top: 154px; left: 427px;" data-ans="R" maxlength="1">
+        <input type="text" class="cell" style="top: 154px; left: 462px;" data-ans="A" maxlength="1">
+        <input type="text" class="cell" style="top: 154px; left: 498px;" data-ans="M" maxlength="1">
+        <input type="text" class="cell" style="top: 154px; left: 533px;" data-ans="A" maxlength="1">
+
+        <input type="text" class="cell" style="top: 195px; left: 110px;" data-ans="W" maxlength="1">
+        <input type="text" class="cell" style="top: 195px; left: 145px;" data-ans="I" maxlength="1">
+        <input type="text" class="cell" style="top: 195px; left: 181px;" data-ans="A" maxlength="1">
+        <input type="text" class="cell" style="top: 195px; left: 215px;" data-ans="T" maxlength="1">
+        <input type="text" class="cell" style="top: 195px; left: 251px;" data-ans="R" maxlength="1">
+        <input type="text" class="cell" style="top: 195px; left: 286px;" data-ans="A" maxlength="1">
+        <input type="text" id="h3" class="cell yellow" style="top: 194px; left: 319px;" data-ans="K" maxlength="1">
+        <input type="text" class="cell" style="top: 194px; left: 357px;" data-ans="I" maxlength="1">
+
+        <input type="text" class="cell" style="top: 235px; left: 286px;" data-ans="P" maxlength="1">
+        <input type="text" id="h4" class="cell yellow" style="top: 234px; left: 319px;" data-ans="R" maxlength="1">
+        <input type="text" class="cell" style="top: 234px; left: 356px;" data-ans="Z" maxlength="1">
+        <input type="text" class="cell" style="top: 234px; left: 392px;" data-ans="E" maxlength="1">
+        <input type="text" class="cell" style="top: 234px; left: 427px;" data-ans="W" maxlength="1">
+        <input type="text" class="cell" style="top: 234px; left: 463px;" data-ans="O" maxlength="1">
+        <input type="text" class="cell" style="top: 234px; left: 497px;" data-ans="D" maxlength="1">
+        <input type="text" class="cell" style="top: 234px; left: 533px;" data-ans="N" maxlength="1">
+        <input type="text" class="cell" style="top: 234px; left: 568px;" data-ans="I" maxlength="1">
+        <input type="text" class="cell" style="top: 234px; left: 604px;" data-ans="K" maxlength="1">
+
+        <input type="text" class="cell" style="top: 274px; left: 251px;" data-ans="G" maxlength="1">
+        <input type="text" class="cell" style="top: 274px; left: 286px;" data-ans="R" maxlength="1">
+        <input type="text" id="h5" class="cell yellow" style="top: 274px; left: 320px;" data-ans="Y" maxlength="1">
+        <input type="text" class="cell" style="top: 274px; left: 356px;" data-ans="Ż" maxlength="1">
+        <input type="text" class="cell" style="top: 274px; left: 391px;" data-ans="Y" maxlength="1">
+        <input type="text" class="cell" style="top: 274px; left: 427px;" data-ans="N" maxlength="1">
+        <input type="text" class="cell" style="top: 274px; left: 462px;" data-ans="A" maxlength="1">
+
+        <input type="text" id="h6" class="cell yellow" style="top: 314px; left: 320px;" data-ans="W" maxlength="1">
+        <input type="text" class="cell" style="top: 314px; left: 357px;" data-ans="I" maxlength="1">
+        <input type="text" class="cell" style="top: 314px; left: 390px;" data-ans="E" maxlength="1">
+        <input type="text" class="cell" style="top: 314px; left: 428px;" data-ans="Ż" maxlength="1">
+        <input type="text" class="cell" style="top: 314px; left: 462px;" data-ans="A" maxlength="1">
+
+        <input type="text" class="cell" style="top: 353px; left: 287px;" data-ans="R" maxlength="1">
+        <input type="text" id="h7" class="cell yellow" style="top: 354px; left: 320px;" data-ans="A" maxlength="1">
+        <input type="text" class="cell" style="top: 354px; left: 356px;" data-ans="C" maxlength="1">
+        <input type="text" class="cell" style="top: 354px; left: 391px;" data-ans="O" maxlength="1">
+        <input type="text" class="cell" style="top: 354px; left: 427px;" data-ans="T" maxlength="1">
+
+        <input type="text" class="cell" style="top: 393px; left: 216px;" data-ans="T" maxlength="1">
+        <input type="text" class="cell" style="top: 393px; left: 251px;" data-ans="L" maxlength="1">
+        <input type="text" class="cell" style="top: 393px; left: 286px;" data-ans="E" maxlength="1">
+        <input type="text" id="h8" class="cell yellow" style="top: 393px; left: 320px;" data-ans="N" maxlength="1">
+        <input type="text" class="cell" style="top: 393px; left: 356px;" data-ans="O" maxlength="1">
+        <input type="text" class="cell" style="top: 393px; left: 392px;" data-ans="W" maxlength="1">
+        <input type="text" class="cell" style="top: 393px; left: 427px;" data-ans="N" maxlength="1">
+        <input type="text" class="cell" style="top: 393px; left: 462px;" data-ans="I" maxlength="1">
+        <input type="text" class="cell" style="top: 393px; left: 498px;" data-ans="A" maxlength="1">
+
+        <input type="text" class="cell" style="top: 433px; left: 180px;" data-ans="Ś" maxlength="1">
+        <input type="text" class="cell" style="top: 433px; left: 215px;" data-ans="M" maxlength="1">
+        <input type="text" class="cell" style="top: 433px; left: 250px;" data-ans="I" maxlength="1">
+        <input type="text" class="cell" style="top: 433px; left: 286px;" data-ans="G" maxlength="1">
+        <input type="text" id="h9" class="cell yellow" style="top: 433px; left: 320px;" data-ans="I" maxlength="1">
+        <input type="text" class="cell" style="top: 433px; left: 357px;" data-ans="E" maxlength="1">
+        <input type="text" class="cell" style="top: 433px; left: 392px;" data-ans="L" maxlength="1">
+
+        <input type="text" class="cell" style="top: 473px; left: 216px;" data-ans="R" maxlength="1">
+        <input type="text" class="cell" style="top: 473px; left: 250px;" data-ans="Y" maxlength="1">
+        <input type="text" class="cell" style="top: 473px; left: 286px;" data-ans="N" maxlength="1">
+        <input type="text" id="h10" class="cell yellow" style="top: 472px; left: 320px;" data-ans="E" maxlength="1">
+        <input type="text" class="cell" style="top: 473px; left: 357px;" data-ans="K" maxlength="1">
+
+        <input type="text" id="target-h1" class="cell final" style="top: 877px; left: 73px;" data-ans="O" readonly>
+        <input type="text" id="target-h2" class="cell final" style="top: 877px; left: 112px;" data-ans="D" readonly>
+        <input type="text" id="target-h3" class="cell final" style="top: 877px; left: 151px;" data-ans="K" readonly>
+        <input type="text" id="target-h4" class="cell final" style="top: 877px; left: 190px;" data-ans="R" readonly>
+        <input type="text" id="target-h5" class="cell final" style="top: 877px; left: 229px;" data-ans="Y" readonly>
+        <input type="text" id="target-h6" class="cell final" style="top: 877px; left: 268px;" data-ans="W" readonly>
+        <input type="text" id="target-h7" class="cell final" style="top: 877px; left: 307px;" data-ans="A" readonly>
+        <input type="text" id="target-h8" class="cell final" style="top: 877px; left: 346px;" data-ans="N" readonly>
+        <input type="text" id="target-h9" class="cell final" style="top: 877px; left: 385px;" data-ans="I" readonly>
+        <input type="text" id="target-h10" class="cell final" style="top: 877px; left: 424px;" data-ans="E" readonly>
+    </div>
+
+    <div class="controls">
+        <button onclick="checkResult()">Sprawdź wynik</button>
+        <button onclick="location.reload()" style="background:#7f8c8d;">Resetuj grę</button>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div id="win-message">
+        <h2>🎉 GRATULACJE! 🎉</h2>
+        <p>Rozwiązałeś krzyżówkę bezbłędnie!</p>
+        <p>Hasło: <b>ODKRYWANIE</b></p>
+        <button onclick="location.reload()">Zagraj jeszcze raz</button>
+    </div>
+
+    <script>
+        const inputs = Array.from(document.querySelectorAll('.cell:not([readonly])'));
+
+        inputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                const val = e.target.value.toUpperCase();
+                e.target.value = val;
+                e.target.classList.remove('correct', 'wrong');
+
+                if (e.target.id && e.target.id.startsWith('h')) {
+                    const target = document.getElementById('target-' + e.target.id);
+                    if (target) target.value = val;
+                }
+
+                if (val.length === 1 && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && input.value === '' && index > 0) {
+                    inputs[index - 1].focus();
+                }
+            });
+        });
+
+        function checkResult() {
+            const allCells = document.querySelectorAll('.cell');
+            let allCorrect = true;
+
+            allCells.forEach(cell => {
+                const userVal = cell.value.toUpperCase();
+                const correctVal = cell.getAttribute('data-ans');
+
+                if (userVal === correctVal) {
+                    cell.classList.add('correct');
+                    cell.classList.remove('wrong');
+                } else {
+                    cell.classList.add('wrong');
+                    cell.classList.remove('correct');
+                    allCorrect = false;
+                }
+            });
+
+            if (allCorrect) {
+                document.getElementById('overlay').style.display = 'block';
+                document.getElementById('win-message').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
